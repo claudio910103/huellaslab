@@ -260,16 +260,8 @@ public class CapturarHuella extends javax.swing.JFrame {
         imageicon = new ImageIcon(this.getClass().getResource("/images/logo.png"));
         initComponents();
         this.setIconImage(imageicon.getImage());
-        instanciarTray();
+        instanciarTray();     
         
-        try{
-            if(SystemTray.isSupported()){
-                systemtray.add(trayicon);
-                this.setVisible(false);
-            }
-        }catch(Exception e){
-            System.out.println(e);
-        }
     }
     
     private void instanciarTray(){
@@ -335,7 +327,7 @@ public class CapturarHuella extends javax.swing.JFrame {
             }
         });
 
-        restaurar.setLabel("Restaurar Ventana");
+        restaurar.setLabel("Cerrar");
         restaurar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 restaurarActionPerformed(evt);
@@ -345,6 +337,11 @@ public class CapturarHuella extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(252, 252, 252));
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentHidden(java.awt.event.ComponentEvent evt) {
+                formComponentHidden(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -452,13 +449,26 @@ public class CapturarHuella extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVerificarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        iniciar();
+        /*
+        iniciar();        
         start();
         estadoHuellas();
         btnGuardar.setEnabled(false);
         btnIdentificar.setEnabled(false);
 //        btnVerificar.setEnabled(false);
         btnSalir.grabFocus();
+        */
+        for(int i=0;i<10000;i++){
+        }
+        System.out.println("Ejecutando Aplicacion en Segundo Plano...");
+        try{
+            if(SystemTray.isSupported()){
+                systemtray.add(trayicon);
+                this.setVisible(false);
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -503,8 +513,20 @@ public class CapturarHuella extends javax.swing.JFrame {
 
     private void restaurarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restaurarActionPerformed
         systemtray.remove(trayicon);
-        this.setVisible(true);
+        //this.setVisible(true);
+        System.exit(0);
     }//GEN-LAST:event_restaurarActionPerformed
+
+    private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
+        System.out.println("Oculto en Segundo Plano");
+        iniciar();        
+        start();
+        estadoHuellas();
+        btnGuardar.setEnabled(false);
+        btnIdentificar.setEnabled(false);
+//        btnVerificar.setEnabled(false);
+        btnSalir.grabFocus();
+    }//GEN-LAST:event_formComponentHidden
 
 
     /**
@@ -538,7 +560,7 @@ public class CapturarHuella extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CapturarHuella().setVisible(false);                
+                new CapturarHuella().setVisible(true);                
             }
         });
     }
