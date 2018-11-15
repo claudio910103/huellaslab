@@ -83,8 +83,8 @@ public class CapturarHuella extends javax.swing.JFrame {
         reclutador.getFeaturesNeeded());
     }
     public void EnviarTexto(String string){
-        txtMensaje.setText(txtMensaje.getText() + "\n" +string);
-//        System.out.println("EnviarTexto"+txtMensaje.getText() + "\n" +string);
+        //txtMensaje.setText(txtMensaje.getText() + "\n" +string);
+       System.out.println(string);
     }
     public void start(){
         lector.startCapture();
@@ -135,7 +135,8 @@ public class CapturarHuella extends javax.swing.JFrame {
                         stop();
                         estadoHuellas();
                         setTemplate(null);
-                        JOptionPane.showMessageDialog(CapturarHuella.this, "La huella no pudo ser creada, intente nuevamente");
+                        //JOptionPane.showMessageDialog(CapturarHuella.this, "La huella no pudo ser creada, intente nuevamente");
+                        EnviarTexto("La huella no pudo ser creada, intente nuevamente");
                 }
             }
         }
@@ -144,10 +145,11 @@ public class CapturarHuella extends javax.swing.JFrame {
     protected void iniciar(){
         lector.addDataListener(new DPFPDataAdapter(){
             @Override public void dataAcquired(final DPFPDataEvent e){
+                EnviarTexto("Huella Capturada...");
                 SwingUtilities.invokeLater(new Runnable(){
                     @Override public void run(){
                         EnviarTexto("La huella ha sido capturada ");
-                        System.out.println("La huella ha sido capturada ");
+                        //System.out.println("La huella ha sido capturada ");
                         procesarCaptura(e.getSample());
                     }
                 });
@@ -155,6 +157,7 @@ public class CapturarHuella extends javax.swing.JFrame {
         });
         lector.addReaderStatusListener(new DPFPReaderStatusAdapter(){
             @Override public void readerConnected(final DPFPReaderStatusEvent e){
+                EnviarTexto("::Sensor de Huellas activo::");
                 SwingUtilities.invokeLater(new Runnable(){
                     @Override public void run(){
                         EnviarTexto("El sensor esta activado o conectado");
@@ -162,6 +165,7 @@ public class CapturarHuella extends javax.swing.JFrame {
                 });
             }
             @Override public void readerDisconnected(final DPFPReaderStatusEvent e){
+                EnviarTexto("::Sensor de huellas desactivado o no conectado::");
                 SwingUtilities.invokeLater(new Runnable(){
                     @Override public void run(){
                         EnviarTexto("El sensor esta desactivado o no conectado");
@@ -171,6 +175,7 @@ public class CapturarHuella extends javax.swing.JFrame {
         });
         lector.addSensorListener(new DPFPSensorAdapter(){
             @Override public void fingerTouched(final DPFPSensorEvent e){
+                EnviarTexto("::Dedo colocado sobre el sensor::");
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -179,6 +184,7 @@ public class CapturarHuella extends javax.swing.JFrame {
                 });
             }
             @Override public void fingerGone(final DPFPSensorEvent e){
+                EnviarTexto("::Dedo quitado del sensor::");
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -190,6 +196,7 @@ public class CapturarHuella extends javax.swing.JFrame {
         lector.addErrorListener(new DPFPErrorAdapter(){
             //@Override
             public void errorReader(final DPFPErrorAdapter e){
+                EnviarTexto("*** Error: " + e.toString());
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -212,7 +219,7 @@ public class CapturarHuella extends javax.swing.JFrame {
             guardarStmt.setBinaryStream(2, datosHuella, tamanoHuella);
             guardarStmt.execute();
             guardarStmt.close();
-            JOptionPane.showMessageDialog(null, "huella guardada correctamente");
+            EnviarTexto("Huella guardada correctamente");
             con.desconectar();
             btnGuardar.setEnabled(false);
 //            btnVerificar.grabFocus();
@@ -238,9 +245,11 @@ public class CapturarHuella extends javax.swing.JFrame {
                 setTemplate(referenceTemplate);
                 DPFPVerificationResult result=verificador.verify(featuresVerificacion, getTemplate());
                 if (result.isVerified()) {
-                    JOptionPane.showMessageDialog(null, "La huella capturara coincide con la de "+userID);
+                    //JOptionPane.showMessageDialog(null, "La huella capturara coincide con la de "+userID);
+                    EnviarTexto("La huella capturara coincide con la de "+userID);
                 }else{
                     JOptionPane.showMessageDialog(null, "La huella no coincide con la de "+userID);
+                    EnviarTexto("La huella capturara no coincide con la de "+userID);
                 }
             }
         } catch (SQLException e) {
@@ -255,7 +264,8 @@ public class CapturarHuella extends javax.swing.JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Imposible cambiar el tema" + e.toString(),"Error",JOptionPane.ERROR_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "Imposible cambiar el tema" + e.toString(),"Error",JOptionPane.ERROR_MESSAGE);
+            EnviarTexto("Imposible cambiar el tema" + e.toString());
         }
         imageicon = new ImageIcon(this.getClass().getResource("/images/logo.png"));
         initComponents();
@@ -460,7 +470,7 @@ public class CapturarHuella extends javax.swing.JFrame {
         */
         for(int i=0;i<10000;i++){
         }
-        System.out.println("Ejecutando Aplicacion en Segundo Plano...");
+        EnviarTexto("Ejecutando aplicacion en segundo plano");
         try{
             if(SystemTray.isSupported()){
                 systemtray.add(trayicon);
@@ -518,7 +528,7 @@ public class CapturarHuella extends javax.swing.JFrame {
     }//GEN-LAST:event_restaurarActionPerformed
 
     private void formComponentHidden(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentHidden
-        System.out.println("Oculto en Segundo Plano");
+        EnviarTexto("Oculto en Segundo Plano");
         iniciar();        
         start();
         estadoHuellas();
